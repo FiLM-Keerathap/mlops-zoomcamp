@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+NC='\e[0m' # No Color
+
+printf "Testing branch naming convention\n"
+
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# Updated branch regex patterns
+base_branch_regex="(master|main|develop|development)"
+valid_support_branches="(feature|feat|fix|bugfix|hotfix|chore|refactor|release|experiment)"
+valid_support_branches_regex="^$valid_support_branches\/[a-zA-Z0-9._-]+$"
+
+if [[ ! $local_branch =~ $valid_support_branches_regex ]] && [[ ! $local_branch =~ $base_branch_regex ]]; then
+    printf "${RED}Branch is named incorrectly${NC}\n"
+    printf "${RED}It should either be named as one of: ${base_branch_regex}, ${NC}\n"
+    printf "${RED}or it should have a prefix from the following set: ${valid_support_branches}${NC}\n"
+    printf "${RED}followed by a forward-slash and the name of the branch.\n${NC}"
+    exit 1
+else
+    printf "${GREEN}Branch is named correctly${NC}\n"
+    exit 0
+fi
+
